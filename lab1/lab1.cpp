@@ -1,6 +1,6 @@
 ﻿#include <iostream>
-#include <fstream>
 #include <string>
+#include <fstream>
 using namespace std;
 
 void menu()
@@ -18,7 +18,7 @@ void menu()
 
 int exit()
 {
-	cout << "Goodbye!" << endl;
+	cout << "Goodbye!\n" << endl;
 	return 0;
 }
 
@@ -109,21 +109,91 @@ void edit_pipe(Pipe p)
 	}
 }
 
+void edit_KC(KC k)
+{
+
+}
+
+void save(Pipe p, KC k)
+{
+	ofstream fout;
+	fout.open("File.txt",ofstream::out);
+	if (!fout.is_open())
+	{
+		cout << "file open error" << endl;
+	}
+	else
+	{
+		fout << p.length << endl << p.diametr << endl <<p.repair;
+		fout << k.name <<endl << k.guilds << endl<< k.efficiency;
+	}
+	fout.close();
+}
+
+void download(Pipe p, KC k)
+{
+	ifstream fin;
+	fin.open("File.txt", ofstream::in);
+	if (!fin.is_open())
+	{
+		cout << "file open error" << endl;
+	}
+	else
+	{
+		fin >> p.length >> p.diametr >> p.repair;
+		fin >> k.name >> k.guilds >> k.efficiency;
+	}
+	cout << "Length: " << p.length
+		<< "\t        Diameter: " << p.diametr
+		<< "\t                Under repair: " << p.repair << endl;
+
+	cout << "The name of KC: " << k.name
+		<< "\tAmount of guilds: " << k.guilds
+		<< "\tEfficiency: " << k.efficiency << " %" << endl << endl;
+	fin.close();
+}
+
+//void skip_to_int()
+//{
+//	if (cin.fail())
+//	{
+//		cin.clear(); // Возвращаем поток в состояние good () ; 
+//		for (char ch; cin >> ch;) { // Отбра сываем не цифры 
+//			if (isdigit(ch) || ch == '-') {
+//				cin.unget(); //Возвращаем цифру в поток, чтобы можно было считать число
+//				return;
+//			}
+//		}
+//	}
+//	cout<< ("Ввода нет");
+}
+
 int main()
 {
 	while (true) {
 		menu();
 		int number;
-		cin >> number;
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore();
-			cout << "Enter number again, please" << endl;
+		while (true) {
 			cin >> number;
-		}
-		if (number < 0 || number > 7)      //+ проверка на ввод только целого числа
-		{
-			cout << "Enter number again, please" << endl;
+			if (cin.fail()) {
+				cin.clear();
+				cin.ignore();
+				for (char ch; cin >> ch;) { // Отбра сываем не цифры 
+					if (isdigit(ch) || ch == '-') {
+						cin.unget(); //Возвращаем цифру в поток, чтобы можно было считать число
+						return;
+					}
+				}
+				cout << "Enter number again, please" << endl;
+			}
+			if (number <= 0 && number >= 7)      //+ проверка на ввод только целого числа
+			{
+				cout << "Enter number again, please" << endl;
+			}
+			else {
+				cout << "Enter number again, please" << endl;
+				break;
+			}
 		}
 		Pipe first;
 		KC second;
@@ -134,9 +204,11 @@ int main()
 			break;
 		case 1:
 			first = create_pipe();
+			system("cls");
 			break;
 		case 2:
 			second = create_KC();
+			system("cls");
 			break;
 		case 3:
 			see_pipe(first);
@@ -144,6 +216,17 @@ int main()
 			break;
 		case 4:
 			edit_pipe(first);
+			system("cls");
+			break;
+		case 5:
+			edit_KC;
+			system("cls");
+			break;
+		case 6: 
+			save(first,second);
+			break;
+		case 7:
+			download(first, second);
 			break;
 		default:
 			return 1;
