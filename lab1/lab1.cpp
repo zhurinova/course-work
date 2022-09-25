@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <fstream>
 using namespace std;
 
 void menu()
@@ -17,51 +16,103 @@ void menu()
 
 int exit()
 {
+	cout << "Goodbye" << endl;
 	return 0;
 }
 
-void add_pipe()
+struct Pipe
 {
-	double length, diametr;
-	string answer;
-	bool repair;
+	double length = 0, diametr = 0;
+	string repair;
+};
+
+Pipe create_pipe()
+{
+	Pipe p;
 	cout << "Enter options of pipe" << endl;
 	cout << "Length" << endl; 
-	cin >> length;
+	cin >> p.length;
 	cout << "Diameter" << endl;
-	cin >> diametr;
+	cin >> p.diametr;
 	cout << "Under repair (yes/no)" << endl;
-	cin >> answer;
-	if (answer == "yes") {
-		repair = true;
-	}
-	else if (answer == "no") {
-        repair = false;
-	}
-	else{
-		cout << "Enter yes or no, please" << endl;
+	repair();
+	return p;
+}
+
+void repair()
+{
+	Pipe p;
+	bool repair = false;
+	cin >> p.repair;
+	while (true) {
+		if (p.repair == "yes") {
+			repair = true;
+			break;
+		}
+		else if (p.repair == "no") {
+			repair = false;
+			break;
+		}
+		else {
+			cout << "Enter yes or no, please" << endl;
+			cin >> p.repair;
+		}
 	}
 }
 
-void add_KC() {
-	char name;
-	int guilds, efficiency;
+struct KC
+{
+	int guilds;
+	double efficiency = 0;
+	string name;
+};
+
+KC create_KC()
+{
+	KC k;
 	cout << "Enter options of KC" << endl;
 	cout << "The name of KC" << endl;
-	cin >> name;
+	cin >> k.name;
 	cout << "Amount of guilds" << endl;
-	cin >> guilds;
+	cin >> k.guilds;
 	cout << "Efficiency in percent" << endl;
-	cin >> efficiency;
+	cin >> k.efficiency;
+	return k;
 }
 
-void see_all() {
+void see_all(Pipe p, KC k)
+{
+	cout << "Length:" << p.length
+		<< "\tDiameter:" << p.diametr
+		<< "\tUnder repair:" << p.repair << endl;
+
+	cout << "The name of KC:" << k.name
+		<< "\tAmount of guilds" << k.guilds
+		<< "\tEfficiency in percent" << k.efficiency << endl;
+}
+
+void edit_pipe(Pipe p)
+{
+	cout << "What do you want to edit: 1. Length   2. Diametr   3. Under repair" << endl;
+	int number;
+	cin >> number;
+	switch (number)
+	{
+	case 1:
+		cin >> p.length;
+		break;
+	case 2:
+		cin >> p.diametr;
+		break;
+	case 3:
+		repair();
+		break;
+	}
 }
 
 int main()
 {
 	menu();
-	long double n;
 	int number;
 	cin >> number;
 	if (cin.fail()) {
@@ -80,10 +131,15 @@ int main()
 		exit();
 		break;
 	case 1:
-		add_pipe();
+		create_pipe();
 		break;
-	case 2:
-		add_KC();
+	case 2:	
+	    create_KC();
+		break;
+	case 3:
+		break;
+	default:
+		return 1;
 	}
 }
 
