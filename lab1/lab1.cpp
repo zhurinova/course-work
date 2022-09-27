@@ -153,19 +153,23 @@ void download(Pipe p, KC k)
 	fin.close();
 }
 
-//void skip_to_int()
-//{
-//	if (cin.fail())
-//	{
-//		cin.clear(); // Возвращаем поток в состояние good () ; 
-//		for (char ch; cin >> ch;) { // Отбра сываем не цифры 
-//			if (isdigit(ch) || ch == '-') {
-//				cin.unget(); //Возвращаем цифру в поток, чтобы можно было считать число
-//				return;
-//			}
-//		}
-//	}
-//	cout<< ("Ввода нет");
+int proverka(int n,int a, int b)
+{
+	do {
+		cin.clear();
+		cin.ignore(10000, '\n');
+		cout << "Enter correct number: ";
+		cin >> n;
+	} while (cin.fail() || n < a || n > b || cin.get() != '\n');
+	return n;
+}
+
+void diapazon(int n, int a, int b)
+{
+	while ((n < a) && (n > b)){
+		cout << "Enter correct number: ";
+		cin >> n;
+	}
 }
 
 int main()
@@ -173,28 +177,8 @@ int main()
 	while (true) {
 		menu();
 		int number;
-		while (true) {
-			cin >> number;
-			if (cin.fail()) {
-				cin.clear();
-				cin.ignore();
-				for (char ch; cin >> ch;) { // Отбра сываем не цифры 
-					if (isdigit(ch) || ch == '-') {
-						cin.unget(); //Возвращаем цифру в поток, чтобы можно было считать число
-						return;
-					}
-				}
-				cout << "Enter number again, please" << endl;
-			}
-			if (number <= 0 && number >= 7)      //+ проверка на ввод только целого числа
-			{
-				cout << "Enter number again, please" << endl;
-			}
-			else {
-				cout << "Enter number again, please" << endl;
-				break;
-			}
-		}
+		cin >> number;
+		proverka(number,0,7);
 		Pipe first;
 		KC second;
 		switch (number)
@@ -222,8 +206,8 @@ int main()
 			edit_KC;
 			system("cls");
 			break;
-		case 6: 
-			save(first,second);
+		case 6:
+			save(first, second);
 			break;
 		case 7:
 			download(first, second);
