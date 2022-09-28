@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <string>
 #include <fstream>
 using namespace std;
 
@@ -47,12 +46,12 @@ Pipe create_pipe()
 {
 	Pipe p;
 	cout << "Enter options of pipe" << endl;
-	cout << "Length" << endl;
+	cout << "Length (1-100 000)" << endl;
 	cin >> p.length;
-	check_dbl(p.length,10000000);
-	cout << "Diameter" << endl;
+	check_dbl(p.length,100000);
+	cout << "Diameter (1-200)" << endl;
 	cin >> p.diametr;
-	check_dbl(p.diametr,10000000);
+	check_dbl(p.diametr,200);
 	cout << "Under repair (yes = 1/ no = 0)" << endl;
 	cin >> p.repair;
 	check_int(p.repair,1);                  
@@ -61,7 +60,7 @@ Pipe create_pipe()
 
 struct KC
 {
-	string name{};
+	string name;
 	int guilds{}, work_guilds{};
 	double efficiency{};
 };
@@ -71,13 +70,13 @@ KC create_KC() {
 	cout << "Enter options of KC" << endl;
 	cout << "The name of KC" << endl;
 	cin >> k.name;
-	cout << "Amount of guilds" << endl;
+	cout << "Amount of guilds (1-100)" << endl;
 	cin >> k.guilds;
 	check_int(k.guilds,100);
-	cout << "Amount of guilds in work" << endl;
+	cout << "Amount of guilds in work (1-100)" << endl;
 	cin >> k.work_guilds;
-	check_int(k.work_guilds,100);
-	cout << "Efficiency in percent" << endl;
+	check_int(k.work_guilds,k.guilds);
+	cout << "Efficiency in percent (1-100)" << endl;
 	cin >> k.efficiency;
 	check_dbl(k.efficiency,100);
 	return k;
@@ -85,76 +84,36 @@ KC create_KC() {
 
 void see_pipe(Pipe p) {
 	cout << "Length: " << p.length
-		<< "\t        Diameter: " << p.diametr
-		<< "\t        Under repair: " << p.repair << endl;
+		<< "\t           Diameter: " << p.diametr
+		<< "\t           Under repair: " << p.repair << "  (0 - no, 1 - yes)" << endl;
 }
 
 void see_KC (KC k){
 	cout << "The name of KC: " << k.name
-		<< "\tAmount of guilds: " << k.guilds
-		<< "\tAmount of guilds in work: " << k.work_guilds
-		<< "\tEfficiency: " << k.efficiency << " %" << endl;
+		<< "\t   Amount of guilds: " << k.guilds
+		<< "\t   Amount of guilds in work: " << k.work_guilds
+		<< "\t   Efficiency: " << k.efficiency << " %" << endl;
 }
 
-void edit_pipe(Pipe p)
+void edit_pipe(Pipe&p)
 {
-	cout << "What do you want to edit: 1. Length   2. Diametr   3. Under repair" << endl;
-	int number;
-	cin >> number;
-	check_int(number,3);
-	switch (number)
-	{
-	case 1:
-		cout << "Length" << endl;
-		cin >> p.length;
-		check_dbl(p.length,10000000);
-		break;
-	case 2:
-		cout << "Diameter" << endl;
-		cin >> p.diametr;
-		check_dbl(p.diametr,100000000);
-		break;
-	case 3:
-		cout << "Under repair (yes/no)" << endl;
-		cin >> p.repair;
-		check_int(p.repair,1);
-		break;
-	}
+	cout << "Is pipe under repair?" << endl;
+	cout << "0 - no" << endl << "1 - yes" << endl;
+	cin >> p.repair;
+	check_int(p.repair,1);
 }
 
-void edit_KC(KC k)
+void edit_KC(KC&k)
 {
-	cout << "What do you want to edit: 1. The name of KC   2. Amount of guilds" << endl << "3. Amount of guilds in work    4. Efficiency in percent" << endl;
-	int number;
-	cin >> number;
-	check_int(number,4);
-    switch (number)
-	{
-	case 1:
-		cout << "The name of KC" << endl;
-		cin >> k.name;
-		break;
-	case 2:
-		cout << "Amount of guilds" << endl;
-		cin >> k.guilds;
-		check_int(k.guilds,100);
-		break;
-	case 3:
-		cout << "Amount of guilds in work" << endl;
-		cin >> k.work_guilds;
-		check_int(k.work_guilds,100);
-		break;
-	case 4:
-		cout << "Efficiency in percent" << endl;
-		cin >> k.efficiency;
-		check_dbl(k.efficiency,100);
-	}
+	cout <<  "Amount of guilds in work" << endl;
+	cin >> k.work_guilds;
+	check_int(k.work_guilds,100);
 }
 
 void save(Pipe p, KC k)
 {
 	ofstream fout;
-	fout.open("File.txt",ofstream::out);
+	fout.open("File.txt", ofstream::out);
 	if (!fout.is_open())
 	{
 		cout << "file open error" << endl;
@@ -167,7 +126,7 @@ void save(Pipe p, KC k)
 	fout.close();
 }
 
-void download(Pipe p, KC k)
+void download(Pipe&p, KC&k)
 {
 	ifstream fin;
 	fin.open("File.txt", ofstream::in);
@@ -182,25 +141,26 @@ void download(Pipe p, KC k)
 	}
 	cout << "Length: " << p.length
 		<< "\t        Diameter: " << p.diametr
-		<< "\t                Under repair: " << p.repair << endl;
+		<< "\t                Under repair: " << p.repair << "  (0 - no, 1 - yes)" << endl;
 
 	cout << "The name of KC: " << k.name
 		<< "\tAmount of guilds: " << k.guilds
 		<< "\tAmount of guilds in work: " << k.work_guilds
 		<< "\tEfficiency: " << k.efficiency << " %" << endl << endl;
+
 	fin.close();
 }
 
 int main()
 {
+	Pipe first = { 0, 0, 0 };
+	KC second = {"--",0,0,0};
 	while (true) {
 		system("cls");
 		menu();
 		int number;
 		cin >> number;
 		check_int(number,7);
-		Pipe first; // = { 0, 0, 0 };
-		KC second; // = { "0", 0, 0 };
 		switch (number)
 		{
 		case 0:
@@ -208,22 +168,16 @@ int main()
 			return 0;
 			break;
 		case 1:
-		{
 			first = create_pipe();
 			break;
-		}
 		case 2:
-		{
 			second = create_KC();
 			break;
-		}
 		case 3:
-		{
 			see_pipe(first);
 			see_KC(second);
 			system("pause");
 			break;
-		}
 		case 4:
 			edit_pipe(first);
 			break;
