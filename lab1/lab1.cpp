@@ -15,9 +15,9 @@ void menu()
 	cout << "7.Download" << endl << endl;
 }
 
-void check_int (int& n, int b)
+void check_int (int& n, int a, int b)
 {
-	while ((cin.fail()) || (n < 0) || (n > b) || (cin.get() != '\n')) {
+	while ((cin.fail()) || (n < a) || (n > b) || (cin.get() != '\n')) {
 		cin.clear();
 		cin.ignore(1000000, '\n');
 		cout << "Enter correct number: ";
@@ -25,9 +25,9 @@ void check_int (int& n, int b)
 	}
 }
 
-void check_dbl (double& n, int b)
+void check_dbl (double& n, int a, int b)
 {
-	while ((cin.fail()) || (n < 0 ) || ( n > b) || (cin.get() != '\n')) {    
+	while ((cin.fail()) || (n < a) || (n > b) || (cin.get() != '\n')) {    
 		cin.clear();
 		cin.ignore(10000, '\n');
 		cout << "Enter correct number: ";
@@ -46,13 +46,13 @@ void create_pipe(Pipe& p)
 	cout << "Enter options of pipe" << endl;
 	cout << "Length (0 - 100 000)" << endl;
 	cin >> p.length;
-	check_dbl(p.length,100000);
+	check_dbl(p.length, 1, 100000);
 	cout << "Diameter (0 - 200)" << endl;
 	cin >> p.diametr;
-	check_dbl(p.diametr,200);
+	check_dbl(p.diametr, 1, 200);
 	cout << "Under repair (yes = 1 / no = 0)" << endl;
 	cin >> p.repair;
-	check_int(p.repair,1);                  
+	check_int(p.repair,0, 1);                  
 }
 
 struct KC
@@ -68,13 +68,13 @@ void create_KC(KC& k) {
     getline(cin, k.name);
 	cout << "Amount of guilds (0 - 100)" << endl;
 	cin >> k.guilds;
-	check_int(k.guilds,100);
+	check_int(k.guilds, 0, 100);
 	cout << "Amount of guilds in work (0 - 100)" << endl;
 	cin >> k.work_guilds;
-	check_int(k.work_guilds,k.guilds);
+	check_int(k.work_guilds, 0, k.guilds);
 	cout << "Efficiency in percent (0 - 100)" << endl;
 	cin >> k.efficiency;
-	check_dbl(k.efficiency,100);
+	check_dbl(k.efficiency, 0, 100);
 }
 
 void see_pipe(Pipe p) {
@@ -95,14 +95,14 @@ void edit_pipe(Pipe& p)
 	cout << "Is pipe under repair?" << endl;
 	cout << "0 - no" << endl << "1 - yes" << endl;
 	cin >> p.repair;
-	check_int(p.repair,1);
+	check_int(p.repair, 0, 1);
 }
 
 void edit_KC(KC& k)
 {
 	cout <<  "Amount of guilds in work" << endl;
 	cin >> k.work_guilds;
-	check_int(k.work_guilds,100);
+	check_int(k.work_guilds, 0, k.guilds);
 }
 
 void save(Pipe p, KC k)
@@ -115,8 +115,8 @@ void save(Pipe p, KC k)
 	}
 	else
 	{
-		fout << p.length << endl << p.diametr << endl << p.repair << endl;
-		fout << k.name << endl << k.guilds << endl << k.work_guilds << endl << k.efficiency;
+		fout << k.name << endl << p.length << endl << p.diametr << endl << p.repair << endl;
+		fout << k.guilds << endl << k.work_guilds << endl << k.efficiency;
 	}
 	fout.close();
 }
@@ -131,13 +131,20 @@ void download(Pipe& p, KC& k)                    // https://www.youtube.com/watc
 	}
 	else
 	{
-		char ch;
-		while (fin.get(ch))                      
-		{
-			cout << ch;
-		}
+		getline(fin, k.name);
+		fin >> p.length >> p.diametr >> p.repair;
+		fin >> k.guilds >> k.work_guilds >> k.efficiency;
 	}
 	fin.close();
+
+	cout << "Length: " << p.length
+		<< "\t        Diameter: " << p.diametr
+		<< "\t                Under repair: " << p.repair << "  (0 - no, 1 - yes)" << endl;
+
+	cout << "The name of KC: " << k.name
+		<< "\tAmount of guilds: " << k.guilds
+		<< "\tAmount of guilds in work: " << k.work_guilds
+		<< "\tEfficiency: " << k.efficiency << " %" << endl << endl;
 }
 
 int main()
@@ -149,7 +156,7 @@ int main()
 		menu();
 		int number;
 		cin >> number;
-		check_int(number,7);
+		check_int(number, 0, 7);
 		switch (number)
 		{
 		case 0:
