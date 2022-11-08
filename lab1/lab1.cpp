@@ -15,24 +15,17 @@ void menu()
 	cout << "7.Download" << endl << endl;
 }
 
-void check_int (int& n, int a, int b)
+template <typename T>
+
+T check(T min, T max)
 {
-	while ((cin.fail()) || (n < a) || (n > b) || (cin.get() != '\n')) {
+	T n;
+	while (((cin >> n).fail()) || (n < min) || (n > max) || (cin.get() != '\n')) {
 		cin.clear();
 		cin.ignore(1000000, '\n');
 		cout << "Enter correct number: ";
-		cin >> n;
 	}
-}
-
-void check_dbl (double& n, int a, int b)
-{
-	while ((cin.fail()) || (n < a) || (n > b) || (cin.get() != '\n')) {    
-		cin.clear();
-		cin.ignore(10000, '\n');
-		cout << "Enter correct number: ";
-		cin >> n;
-	}
+	return n;
 }
 
 struct Pipe
@@ -40,19 +33,17 @@ struct Pipe
 	double length{}, diametr{};
 	int repair{};
 };
-
-void create_pipe(Pipe& p)
+//поток по ссылке
+istream& operator >> (istream& in, Pipe& p)   // пользовательский опeратор на вход, который будет принимать тип труба
 {
 	cout << "Enter options of pipe" << endl;
 	cout << "Length (0 - 100 000)" << endl;
-	cin >> p.length;
-	check_dbl(p.length, 1, 100000);
+	p.length = check(1.0, 100000.0);
 	cout << "Diameter (0 - 200)" << endl;
-	cin >> p.diametr;
-	check_dbl(p.diametr, 1, 200);
+	p.diametr = check(1.0, 200.0);
 	cout << "Under repair (yes = 1 / no = 0)" << endl;
-	cin >> p.repair;
-	check_int(p.repair,0, 1);                  
+	p.repair = check(0, 1);
+	return in;
 }
 
 struct KC
@@ -62,47 +53,48 @@ struct KC
 	double efficiency{};
 };
 
-void create_KC(KC& k) {
+istream& operator >> (istream& in, KC& k)
+{
 	cout << "Enter options of KC" << endl;
 	cout << "The name of KC" << endl;
-    getline(cin, k.name);
+	getline(in, k.name);
 	cout << "Amount of guilds (0 - 100)" << endl;
-	cin >> k.guilds;
-	check_int(k.guilds, 0, 100);
+	k.guilds = check(0, 100);
 	cout << "Amount of guilds in work (0 - 100)" << endl;
-	cin >> k.work_guilds;
-	check_int(k.work_guilds, 0, k.guilds);
+	k.work_guilds = check(0, k.guilds);
 	cout << "Efficiency in percent (0 - 100)" << endl;
-	cin >> k.efficiency;
-	check_dbl(k.efficiency, 0, 100);
+	k.efficiency = check(0.0, 100.0);
+	return in;
 }
 
-void see_pipe(Pipe p) {
-	cout << "Length: " << p.length
+ostream& operator >> (ostream& out, Pipe& p)
+{
+	out << "Length: " << p.length
 		<< "\t           Diameter: " << p.diametr
 		<< "\t           Under repair: " << p.repair << "  (0 - no, 1 - yes)" << endl;
+	return out;
 }
 
-void see_KC (KC k){
-	cout << "The name of KC: " << k.name
+ostream& operator >> (ostream& out, KC& k)
+{
+	out << "The name of KC: " << k.name
 		<< "\t   Amount of guilds: " << k.guilds
 		<< "\t   Amount of guilds in work: " << k.work_guilds
 		<< "\t   Efficiency: " << k.efficiency << " %" << endl;
+	return out;
 }
 
 void edit_pipe(Pipe& p)
 {
 	cout << "Is pipe under repair?" << endl;
 	cout << "0 - no" << endl << "1 - yes" << endl;
-	cin >> p.repair;
-	check_int(p.repair, 0, 1);
+	p.repair = check(0, 1);
 }
 
 void edit_KC(KC& k)
 {
-	cout <<  "Amount of guilds in work" << endl;
-	cin >> k.work_guilds;
-	check_int(k.work_guilds, 0, k.guilds);
+	cout << "Amount of guilds in work" << endl;
+	k.work_guilds = check(0, k.guilds);
 }
 
 void save(Pipe p, KC k)
@@ -150,28 +142,25 @@ void download(Pipe& p, KC& k)                    // https://www.youtube.com/watc
 int main()
 {
 	Pipe first = { 0, 0, 0 };
-	KC second = {"--",0,0,0};
+	KC second = { "--",0,0,0 };
 	while (true) {
 		system("cls");
 		menu();
-		int number;
-		cin >> number;
-		check_int(number, 0, 7);
-		switch (number)
+		switch (check(0, 7))
 		{
 		case 0:
 			cout << "Goodbye!\n" << endl;
 			return 0;
 			break;
 		case 1:
-			create_pipe(first);
+			cin >> first;
 			break;
 		case 2:
-			create_KC(second);
+			cin >> second;
 			break;
 		case 3:
-			see_pipe(first);
-			see_KC(second);
+			cout >> first;
+			cout >> second;
 			system("pause");
 			break;
 		case 4:
