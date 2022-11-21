@@ -74,80 +74,65 @@ void save(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 	getline(cin, file_name);
 	file_name += ".txt";
 	ofstream fout;
-	fout.open(file_name, ofstream::out);
+	fout.open(file_name, ofstream::app);   // будем дозаписывать в файл
 	if (!fout.is_open())
 	{
 		cerr << "File open error" << endl;
 	}
 	else
 	{
-		fout << "Pipe" << endl;
-		fout << pipe_map.size() << endl;
-		for (const auto& [id_pipe, p] : pipe_map)
+		if (pipe_map.size() != 0) {
+			fout << pipe_map.size() << endl;
+			for (const auto& [id_pipe, p] : pipe_map)
 			fout << p;
-		fout << "KC" << endl;
-		fout << KC_map.size() << endl;
-		for (const auto& [id_KC, k] : KC_map)
+		}
+		if (KC_map.size() != 0) {
+			fout << KC_map.size() << endl;
+			for (const auto& [id_KC, k] : KC_map)
 			fout << k;
-		fout.close();
+		}
+	fout.close();
 	}
-}
-
-void load_pipe(ifstream& fin, Pipe& p)
-{
-	getline(fin, p.name_pipe);
-	fin >> p.length_pipe >> p.diametr_pipe >> p.repair_pipe;
-}
-
-void load_KC(ifstream& fin, KC& k)
-{
-	getline(fin, k.name_KC);
-	fin >> k.guilds_KC >> k.work_guilds_KC >> k.efficiency_KC;
 }
 
 void load(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 {
+	Pipe::max_id_pipe = 1;
+	KC::max_id_KC = 1;
+	pipe_map.clear();
+	KC_map.clear();
+	int amount_of_pipe = 0;
+	int amount_of_KC = 0;
+
 	cout << "Enter the file name: " << endl;
 	string file_name;
-	cin >> ws;
 	getline(cin, file_name);
-	file_name += ".txt";
+	file_name += ".txt"; 
 	ifstream fin;
 	fin.open(file_name, ofstream::in);
 	if (!fin.is_open())
 	{
-		cerr << "File open error" << endl;
+		cerr << "file open error" << endl;
 	}
 	else
 	{
-		while (!fin.eof())
-		{
-			string object;
-			fin >> ws;
-			getline(fin, object);
-			int amount_of_pipe;
-			int amout_of_KC;
-			if (object == "Pipe")
+			fin >> amount_of_pipe;
+			for (int i = 0; i < amount_of_pipe; i++) 
 			{
-				fin >> amount_of_pipe;
-				if (amount_of_pipe > 0)
-				{
-					Pipe p;
-					p.load(fin);
-					pipe_map.emplace(p.max_id_pipe, p);
-				}
-				if (object == "KC")
-				{
-					KC k;
-					load_KC(fin, k);
-				}
+				Pipe p;
+				p.load(fin);
+				pipe_map[Pipe::max_id_pipe++] = p;
+			}
+			fin >> amount_of_KC;
+			for (int i = 0; i < amount_of_KC; i++) {
+				KC k;
+				k.load(fin);
+				KC_map[KC::max_id_KC++] = k;
 			}
 			cout << "Information is uploaded!" << endl;
 			fin.close();
-		}
 	}
 }
-
 
 
 int main()
@@ -155,8 +140,6 @@ int main()
 	unordered_map <int, Pipe> pipe_map = {};
 	unordered_map <int, KC> KC_map = {};
 	
-	Pipe first;
-	KC second;
 	while (true) {
 		system("cls");
 		menu();
@@ -187,7 +170,6 @@ int main()
 			{
 				for (const auto& [id_pipe, p] : pipe_map)
 				{
-					cout << id_pipe;
 					cout << p << endl;
 				}
 			}
@@ -195,7 +177,6 @@ int main()
 			{
 				for (const auto& [id_KC, k] : KC_map)
 				{
-					cout << id_KC;
 					cout << k << endl;
 				}
 			}
@@ -203,12 +184,10 @@ int main()
 			{
 				for (const auto& [id_pipe, p] : pipe_map)
 				{
-					cout << id_pipe;
 					cout << p << endl;
 				}
 				for (const auto& [id_KC, k] : KC_map)
 				{
-					cout << id_KC;
 					cout << k << endl;
 				}
 			}

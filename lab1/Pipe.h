@@ -5,16 +5,16 @@
 
 class Pipe
 {
-	int id_pipe{};
+	int id_pipe = 0;
 
 public:
+	Pipe();
 	static int max_id_pipe;
 	std::string name_pipe;
 	double length_pipe{};
 	double diametr_pipe{};
 	int repair_pipe{};
 
-	void set_id_pipe();
 	int get_id_pipe() const;
 	void edit_pipe();
 	void load(std:: ifstream& fin);

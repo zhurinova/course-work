@@ -3,16 +3,15 @@
 
 using namespace std;
 
-int KC::max_id_KC = 0;
+int KC::max_id_KC = 1;
+
+KC::KC() {
+	id_KC = KC::max_id_KC;
+}
 
 int KC::get_id_KC() const
 {
 	return id_KC;
-}
-
-void KC::set_id_KC()
-{
-	id_KC = ++max_id_KC;
 }
 
 void KC:: edit_KC()
@@ -21,9 +20,17 @@ void KC:: edit_KC()
 	work_guilds_KC = check_the_number(0, guilds_KC);
 }
 
+void KC::load(std::ifstream& fin)
+{
+	fin >> name_KC;
+	fin >> guilds_KC;
+	fin >> work_guilds_KC;
+	fin >> efficiency_KC;
+}
+
+
 istream& operator >> (istream& in, KC& k)
 {
-	k.set_id_KC();
 	cout << "Enter options of KC, please" << endl;
 	cout << "The name of KC" << endl;
 	getline(in, k.name_KC);
@@ -58,8 +65,7 @@ ifstream& operator >> (ifstream& in, KC& k)
 
 ofstream& operator << (ofstream& out, const KC& k)
 {
-	out << k.get_id_KC() << endl
-		<< k.name_KC << endl
+	out << k.name_KC << endl
 		<< k.guilds_KC << endl
 		<< k.work_guilds_KC << endl
 		<< k.efficiency_KC << endl;
