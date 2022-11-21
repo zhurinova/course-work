@@ -22,6 +22,14 @@ void Pipe:: edit_pipe()
 	repair_pipe = check_the_number(0, 1);
 }
 
+void Pipe::load(std::ifstream& fin)
+{
+	fin >> name_pipe;
+	fin >> length_pipe;
+	fin >> diametr_pipe;
+	fin >> repair_pipe;
+}
+
 istream& operator >> (istream& in, Pipe& p)   // пользовательский опeратор на вход, который будет принимать тип труба
 {
 	p.set_id_pipe();

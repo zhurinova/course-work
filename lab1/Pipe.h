@@ -17,6 +17,7 @@ public:
 	void set_id_pipe();
 	int get_id_pipe() const;
 	void edit_pipe();
+	void load(std:: ifstream& fin);
 
 	friend std::istream& operator >> (std::istream& in, Pipe& p);
 	friend std::ostream& operator << (std::ostream& out, const Pipe& p);

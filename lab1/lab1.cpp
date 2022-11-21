@@ -19,8 +19,8 @@ void menu()
 	cout << "5. Edit KC" << endl;
 	cout << "6. Save" << endl;
 	cout << "7. Download" << endl;
-	cout << "8. Delete pipe or several pipes" << endl;
-	cout << "9. Delete KC or several KCs" << endl;
+	cout << "8. Delete pipe" << endl;
+	cout << "9. Delete KC" << endl;
 	cout << "10. Search object" << endl;
 	cout << "11. Package pipe's editing " << endl;
 	cout << "Choose action" << endl << endl;
@@ -46,6 +46,16 @@ KC& choose_KC(unordered_map<int, KC>& k)
 		return k[id];
 }
 
+void delete_pipe(unordered_map<int, Pipe>& p)
+{
+	cout << "Enter Pipe id: ";
+	int id = check_the_number(1, Pipe::max_id_pipe);
+	if (p.count(id) == 0)
+		cout << "There is no Pipe with this id\n";
+	else
+		p.erase(id);
+}
+
 void delete_KC(unordered_map<int, KC>& k)
 {
 	cout << "Enter KC id: ";
@@ -56,7 +66,7 @@ void delete_KC(unordered_map<int, KC>& k)
 		k.erase(id);
 }
 
-void save(const Pipe& p, const KC& k)
+void save(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 {
 	cout << "Enter the file name: " << endl;
 	string file_name;
@@ -71,17 +81,16 @@ void save(const Pipe& p, const KC& k)
 	}
 	else
 	{
-		if (!(p.length_pipe == 0))
-		{
-			fout << "Pipe" << endl << p.name_pipe << endl << p.length_pipe << endl << p.diametr_pipe << endl << p.repair_pipe << endl;
-		}
-		if (!(k.guilds_KC == 0))
-		{
-			fout << "KC" << endl << k.name_KC << endl << k.guilds_KC << endl << k.work_guilds_KC << endl << k.efficiency_KC;
-		}
+		fout << "Pipe" << endl;
+		fout << pipe_map.size() << endl;
+		for (const auto& [id_pipe, p] : pipe_map)
+			fout << p;
+		fout << "KC" << endl;
+		fout << KC_map.size() << endl;
+		for (const auto& [id_KC, k] : KC_map)
+			fout << k;
+		fout.close();
 	}
-	fout.close();
-	cout << "Information is saved!" << endl;
 }
 
 void load_pipe(ifstream& fin, Pipe& p)
@@ -96,7 +105,7 @@ void load_KC(ifstream& fin, KC& k)
 	fin >> k.guilds_KC >> k.work_guilds_KC >> k.efficiency_KC;
 }
 
-void load(Pipe& p, KC& k)                    // https://www.youtube.com/watch?v=aUP0eAEIxog
+void load(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 {
 	cout << "Enter the file name: " << endl;
 	string file_name;
@@ -107,7 +116,7 @@ void load(Pipe& p, KC& k)                    // https://www.youtube.com/watch?v=
 	fin.open(file_name, ofstream::in);
 	if (!fin.is_open())
 	{
-		cerr << "file open error" << endl;
+		cerr << "File open error" << endl;
 	}
 	else
 	{
@@ -116,19 +125,30 @@ void load(Pipe& p, KC& k)                    // https://www.youtube.com/watch?v=
 			string object;
 			fin >> ws;
 			getline(fin, object);
+			int amount_of_pipe;
+			int amout_of_KC;
 			if (object == "Pipe")
 			{
-				load_pipe(fin, p);
+				fin >> amount_of_pipe;
+				if (amount_of_pipe > 0)
+				{
+					Pipe p;
+					p.load(fin);
+					pipe_map.emplace(p.max_id_pipe, p);
+				}
+				if (object == "KC")
+				{
+					KC k;
+					load_KC(fin, k);
+				}
 			}
-			if (object == "KC")
-			{
-				load_KC(fin, k);
-			}
+			cout << "Information is uploaded!" << endl;
+			fin.close();
 		}
-		cout << "Information is uploaded!" << endl;
-		fin.close();
 	}
 }
+
+
 
 int main()
 {
@@ -140,12 +160,11 @@ int main()
 	while (true) {
 		system("cls");
 		menu();
-		switch (check_the_number(0, 7))
+		switch (check_the_number(0, 11))
 		{
 		case 0:
 		{
 			cout << "Goodbye!\n" << endl;
-			return 0;
 			break;
 		}
 		case 1:
@@ -197,7 +216,6 @@ int main()
 			system("pause");
 			break;
 		}
-		break;
 		case 4:
 		{
 			if (pipe_map.size() > 0)
@@ -207,7 +225,6 @@ int main()
 			else cout << "" << endl;
 			break;
 		}
-			break;
 		case 5:
 		{
 			if (KC_map.size() > 0)
@@ -218,12 +235,21 @@ int main()
 			break;
 		}
 		case 6:
-			save(first, second);
+			save(pipe_map, KC_map);
 			break;
 		case 7:
-			load(first, second);
+			load(pipe_map, KC_map);
 			system("pause");
 			break;
+		case 8:
+		{
+			if (pipe_map.size() > 0)
+			{
+				delete_pipe(pipe_map);
+			}
+			else cout << "There is no Pipe!" << endl;
+			break;
+		}
 		case 9:
 		{
 			if (KC_map.size() > 0)
@@ -233,8 +259,17 @@ int main()
 			else cout << "There is no KC!" << endl;
 			break;
 		}
+		case 10:
+		{
+
+		}
+		case 11:
+		{
+
+		}
 		default:
 			cout << "Program error";
 		}
 	}
+	return 0;
 }

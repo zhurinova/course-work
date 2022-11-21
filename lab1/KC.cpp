@@ -39,7 +39,7 @@ istream& operator >> (istream& in, KC& k)
 ostream& operator << (ostream& out, const KC& k)
 {
 	out << "The ID of KC: " << k.id_KC
-		<< "The name of KC: " << k.name_KC
+		<< "\t   The name of KC: " << k.name_KC
 		<< "\t   Amount of guilds: " << k.guilds_KC
 		<< "\t   Amount of guilds in work: " << k.work_guilds_KC
 		<< "\t   Efficiency: " << k.efficiency_KC << " %" << endl;
