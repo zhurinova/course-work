@@ -9,10 +9,10 @@ KC::KC() {
 	id_KC = KC::max_id_KC;
 }
 
-int KC::get_id_KC() const
-{
-	return id_KC;
-}
+//int KC::get_id_KC() const
+//{
+//	return id_KC;
+//}
 
 void KC:: edit_KC()
 {
@@ -27,7 +27,6 @@ void KC::load(std::ifstream& fin)
 	fin >> work_guilds_KC;
 	fin >> efficiency_KC;
 }
-
 
 istream& operator >> (istream& in, KC& k)
 {

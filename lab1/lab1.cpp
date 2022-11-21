@@ -84,12 +84,12 @@ void save(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 		if (pipe_map.size() != 0) {
 			fout << pipe_map.size() << endl;
 			for (const auto& [id_pipe, p] : pipe_map)
-			fout << p;
+				fout << p;
 		}
 		if (KC_map.size() != 0) {
 			fout << KC_map.size() << endl;
 			for (const auto& [id_KC, k] : KC_map)
-			fout << k;
+				fout << k;
 		}
 	fout.close();
 	}
@@ -116,24 +116,85 @@ void load(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 	}
 	else
 	{
-			fin >> amount_of_pipe;
-			for (int i = 0; i < amount_of_pipe; i++) 
-			{
-				Pipe p;
-				p.load(fin);
-				pipe_map[Pipe::max_id_pipe++] = p;
-			}
-			fin >> amount_of_KC;
-			for (int i = 0; i < amount_of_KC; i++) {
-				KC k;
-				k.load(fin);
-				KC_map[KC::max_id_KC++] = k;
-			}
-			cout << "Information is uploaded!" << endl;
-			fin.close();
+		fin >> amount_of_pipe;
+		for (int i = 0; i < amount_of_pipe; i++) 
+		{
+			Pipe p;
+			p.load(fin);
+			pipe_map[Pipe::max_id_pipe++] = p;
+		}
+		fin >> amount_of_KC;
+		for (int i = 0; i < amount_of_KC; i++) {
+			KC k;
+			k.load(fin);
+			KC_map[KC::max_id_KC++] = k;
+		}
+		cout << "Information is uploaded!" << endl;
+		fin.close();
 	}
 }
 
+template<typename T>
+using filter_for_pipe = bool(*)(const Pipe& p, T param);
+
+bool check_name(const Pipe& p, string param)
+{
+	return p.name_pipe == param;
+}
+
+bool check_repair(const Pipe& p, int param)
+{
+	return p.repair_pipe == param;
+}
+
+template<typename T>
+vector <int> find_pipe_by_filter(const unordered_map<int, Pipe>& pipeline, filter_for_pipe <T> f, T param)
+{
+	vector <int> res;
+	int i = 0;
+	for (auto& p : pipe_map)
+	{
+		if (f(p.second, param))
+			res.push_back(p.first);
+		i++;
+	}
+
+	if (res.empty())
+		cout << "There is no pipe with this parameter" << endl;
+
+	return res;
+}
+
+template<typename T>
+using filter_for_KC = bool(*)(const KC& k, T param);
+
+bool check_name(const KC& k, string param)
+{
+	return k.name_KC == param;
+}
+bool check_percentage(const KC& k, double param)
+{
+	double not_working = (((double)k.guilds_KC - (double)k.work_guilds_KC) / k.guilds_KC) * 100;
+	return not_working >= param;
+}
+
+template<typename T>
+vector <int> find_KC_by_filter(const unordered_map<int, KC>& KC_map, filter_for_KC <T> f, T param)
+{
+	vector <int> res;
+	int i = 0;
+	for (auto& k : KC_map)
+	{
+		if (f(k.second, param))
+			res.push_back(k.first);
+		i++;
+	}
+
+	if (res.empty())
+		cout << "There is no KC with this parameter" << endl;
+
+	return res;
+}
 
 int main()
 {
@@ -154,14 +215,14 @@ int main()
 		{
 			Pipe p;
 			cin >> p;
-			pipe_map.emplace(p.max_id_pipe, p);
+			pipe_map[Pipe::max_id_pipe++] = p;
 			break;
 		}
 		case 2:
 		{
 			KC k;
 			cin >> k;
-			KC_map.emplace(k.max_id_KC, k);
+			KC_map[KC::max_id_KC++] = k;
 			break;
 		}
 		case 3:
@@ -191,8 +252,6 @@ int main()
 					cout << k << endl;
 				}
 			}
-			else cout << "Please create objects" << endl;
-			system("pause");
 			break;
 		}
 		case 4:
@@ -240,7 +299,56 @@ int main()
 		}
 		case 10:
 		{
-
+			cout << "Find pipes or KC by filter: 1 - pipes, 2 - KC:  " << endl;
+			if (check_the_number(1, 2) == 1)
+			{
+				cout << "Find pipes by the: 1 - name, 2 - repair:  " << endl;
+				switch (check_the_number(1, 2))
+				{
+				case 1:
+				{
+					string name;
+					cout << "Find pipe by the name:  " << endl;
+					getline(cin, name);
+					for (int i : find_pipe_by_filter(pipe_map, check_name, name))
+						cout << pipe_map[i];
+					break;
+				}
+				case 2:
+				{
+					cout << "Find pipes which: 1 - is working, 0 - under repair " << endl;
+					int repair = check_the_number(0, 1);
+					for (int i : find_pipe_by_filter(pipe_map, check_repair, repair))
+						cout << pipe_map[i];
+					break;
+				}
+				}
+			}
+			else
+			{
+				cout << "Find KS by filter: 1 - name, 2 - percentage of non-working guilds:  " << endl;
+				switch (check_the_number(1, 2))
+				{
+				case 1:
+				{
+					string name;
+					cout << "Find KC by the name:  " << endl;
+					getline(cin, name);
+					for (int i : find_KC_by_filter(KC_map, check_name, name))
+						cout << KC_map[i];
+					break;
+				}
+				case 2:
+				{
+					cout << "Find KC by percentage of non-working guilds: " << endl;
+					double not_working = check_the_number(0.0, 100.0);
+					for (int i : find_KC_by_filter(KC_map, check_percentage, not_working))
+						cout << KC_map[i];
+					break;
+				}
+				}
+			}
+			break;
 		}
 		case 11:
 		{
