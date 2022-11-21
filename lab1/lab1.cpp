@@ -31,19 +31,29 @@ Pipe& choose_pipe(unordered_map<int, Pipe>& p)
 	cout << "Enter pipe id: ";
 	int id = check_the_number(1, Pipe::max_id_pipe);
 	if (p.count(id) == 0)
-		cout << "ERROR! There is no pipe with this id\n";
+		cout << "There is no pipe with this id\n";
 	else
 		return p[id];
 }
 
 KC& choose_KC(unordered_map<int, KC>& k)
 {
-	cout << "Enter compressor station id: ";
+	cout << "Enter KC id: ";
 	int id = check_the_number(1, KC::max_id_KC);
 	if (k.count(id) == 0)
-		cout << "ERROR! There is no compressor station with this id\n";
+		cout << "There is no KC with this id\n";
 	else
 		return k[id];
+}
+
+void delete_KC(unordered_map<int, KC>& k)
+{
+	cout << "Enter KC id: ";
+	int id = check_the_number(1, KC::max_id_KC);
+	if (k.count(id) == 0)
+		cout << "There is no KC with this id\n";
+	else
+		k.erase(id);
 }
 
 void save(const Pipe& p, const KC& k)
@@ -194,7 +204,7 @@ int main()
 			{
 				choose_pipe(pipe_map).edit_pipe();
 			}
-			else cout << "Before editing pipe you should INPUT pipe" << endl;
+			else cout << "" << endl;
 			break;
 		}
 			break;
@@ -204,7 +214,7 @@ int main()
 			{
 				choose_KC(KC_map).edit_KC();
 			}
-			else cout << "Before editing compressor station you should INPUT compressor station" << endl;
+			else cout << "" << endl;
 			break;
 		}
 		case 6:
@@ -214,6 +224,15 @@ int main()
 			load(first, second);
 			system("pause");
 			break;
+		case 9:
+		{
+			if (KC_map.size() > 0)
+			{
+				delete_KC(KC_map);
+			}
+			else cout << "There is no KC!" << endl;
+			break;
+		}
 		default:
 			cout << "Program error";
 		}
