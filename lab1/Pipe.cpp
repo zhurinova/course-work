@@ -1,10 +1,30 @@
-#include "Pipe.h"
+п»ї#include "Pipe.h"
 #include "Utils.h"
 
 using namespace std;
 
-istream& operator >> (istream& in, Pipe& p)   // пользовательский опeратор на вход, который будет принимать тип труба
+int Pipe:: max_id_pipe = 0;
+
+int Pipe::get_id_pipe() const
 {
+	return id_pipe;
+}
+
+void Pipe::set_id_pipe()
+{
+	id_pipe = ++max_id_pipe;
+}
+
+void Pipe:: edit_pipe()
+{
+	cout << "Is pipe under repair?" << endl;
+	cout << "0 - no" << endl << "1 - yes" << endl;
+	repair_pipe = check_the_number(0, 1);
+}
+
+istream& operator >> (istream& in, Pipe& p)   // РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ РѕРїeСЂР°С‚РѕСЂ РЅР° РІС…РѕРґ, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РїСЂРёРЅРёРјР°С‚СЊ С‚РёРї С‚СЂСѓР±Р°
+{
+	p.set_id_pipe();
 	cout << "Enter the options of Pipe, please" << endl;
 	cout << "The name of Pipe" << endl;
 	getline(in, p.name_pipe);
@@ -19,9 +39,30 @@ istream& operator >> (istream& in, Pipe& p)   // пользовательский опeратор на вх
 
 ostream& operator << (ostream& out, const Pipe& p)
 {
-	out <<"The name of Pipe: " << p.name_pipe
+	out << "The ID of Pipe: " << p.id_pipe
+	    << "\t           The name of Pipe: " << p.name_pipe
 		<< "\t           Length: " << p.length_pipe
 		<< "\t           Diameter: " << p.diametr_pipe
 		<< "\t           Under repair: " << p.repair_pipe << "  (0 - no, 1 - yes)" << endl;
+	return out;
+}
+
+ifstream& operator >> (ifstream& in, Pipe& p)
+{
+	in >> p.id_pipe;
+	in >> p.name_pipe;
+	in >> p.length_pipe;
+	in >> p.diametr_pipe;
+	in >> p.repair_pipe;
+	return in;
+}
+
+ofstream& operator << (ofstream& out, const Pipe& p)
+{
+	out << p.get_id_pipe() << endl
+	    << p.name_pipe << endl
+		<< p.length_pipe << endl
+		<< p.diametr_pipe << endl
+		<< p.repair_pipe << endl;
 	return out;
 }

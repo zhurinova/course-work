@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +129,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="KC.cpp" />
-    <ClCompile Include="lab1.cpp" />
+    <ClCompile Include="lab1.cpp">
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
     <ClCompile Include="Pipe.cpp" />
   </ItemGroup>
   <ItemGroup>
