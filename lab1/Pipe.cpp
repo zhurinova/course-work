@@ -3,17 +3,12 @@
 
 using namespace std;
 
-int Pipe::max_id_pipe = 0;
+int Pipe::max_id_pipe = 1;
 
 Pipe::Pipe()
 {
 	id_pipe = Pipe::max_id_pipe;
 }
-
-//int Pipe::get_id_pipe() const
-//{
-//	return id_pipe;
-//}
 
 void Pipe:: edit_pipe()
 {

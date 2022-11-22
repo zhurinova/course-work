@@ -5,11 +5,10 @@
 
 class Pipe
 {
-	int id_pipe = 0;
+	int id_pipe;
 
 public:
 	Pipe();
-	//int get_id_pipe() const;
 	void edit_pipe();
 	void load(std::ifstream& fin);
 

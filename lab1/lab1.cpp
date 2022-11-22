@@ -112,7 +112,7 @@ void load(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
 	fin.open(file_name, ofstream::in);
 	if (!fin.is_open())
 	{
-		cerr << "file open error" << endl;
+		cerr << "File open error" << endl;
 	}
 	else
 	{
@@ -148,7 +148,7 @@ bool check_repair(const Pipe& p, int param)
 }
 
 template<typename T>
-vector <int> find_pipe_by_filter(const unordered_map<int, Pipe>& pipeline, filter_for_pipe <T> f, T param)
+vector <int> find_pipe_by_filter(const unordered_map<int, Pipe>& pipe_map, filter_for_pipe <T> f, T param)
 {
 	vector <int> res;
 	int i = 0;
@@ -160,7 +160,7 @@ vector <int> find_pipe_by_filter(const unordered_map<int, Pipe>& pipeline, filte
 	}
 
 	if (res.empty())
-		cout << "There is no pipe with this parameter" << endl;
+		cout << "There is no Pipe with this parameter" << endl;
 
 	return res;
 }
@@ -172,9 +172,10 @@ bool check_name(const KC& k, string param)
 {
 	return k.name_KC == param;
 }
+
 bool check_percentage(const KC& k, double param)
 {
-	double not_working = (((double)k.guilds_KC - (double)k.work_guilds_KC) / k.guilds_KC) * 100;
+	double not_working = ((double)k.guilds_KC - (double)k.work_guilds_KC)/(double)k.guilds_KC * 100;  //- (double)k.work_guilds_KC) / k.guilds_KC;
 	return not_working >= param;
 }
 
@@ -194,6 +195,69 @@ vector <int> find_KC_by_filter(const unordered_map<int, KC>& KC_map, filter_for_
 		cout << "There is no KC with this parameter" << endl;
 
 	return res;
+}
+
+void package_pipe_editing(unordered_map<int, Pipe>& pipe_map)
+{
+	cout << "Do you want to edit: 1 - all pipes, 2 - several pipes: ";
+	if (check_the_number(1, 2) == 1)
+	{
+		cout << "Enter 1 - to make all pipes work, 2 - to make it under repair: ";
+		if (check_the_number(1, 2) == 1)
+		{
+			for (auto& p : pipe_map)
+				p.second.repair_pipe = 1;
+		}
+		else
+		{
+			for (auto& p : pipe_map)
+				p.second.repair_pipe = 0;
+		}
+	}
+	else
+	{
+		vector <int> id_vector;
+		while (true)
+		{
+			cout << "Enter id of pipe to edit it or 0 to complete: ";
+			int number = check_the_number(0, Pipe:: max_id_pipe);
+			if (number)
+			{
+				if (pipe_map.count(number) == 0)
+					cout << "There is no pipe with this id" << endl;
+				else
+				{
+					int i = 0;
+					for (auto& id : id_vector)
+					{
+						if (number == id)
+						{
+							i++;
+						}
+					}
+					if (i == 0)
+					{
+						id_vector.push_back(number);
+					}
+					else
+					{
+						cout << "You have already edit this pipe" << endl;;
+					}
+				}
+			}
+			else
+				break;
+		}
+		for (int i : id_vector)
+		{
+			if (pipe_map[i].repair_pipe == 1) {
+				pipe_map[i].repair_pipe = 0;
+			}
+			else if (pipe_map[i].repair_pipe == 0){
+				pipe_map[i].repair_pipe = 1;
+			}
+		}
+	}
 }
 
 int main()
@@ -252,6 +316,7 @@ int main()
 					cout << k << endl;
 				}
 			}
+			system("pause");
 			break;
 		}
 		case 4:
@@ -260,7 +325,7 @@ int main()
 			{
 				choose_pipe(pipe_map).edit_pipe();
 			}
-			else cout << "" << endl;
+			else cout << "Input Pipe please" << endl;
 			break;
 		}
 		case 5:
@@ -269,7 +334,7 @@ int main()
 			{
 				choose_KC(KC_map).edit_KC();
 			}
-			else cout << "" << endl;
+			else cout << "Input KC please" << endl;
 			break;
 		}
 		case 6:
@@ -294,7 +359,7 @@ int main()
 			{
 				delete_KC(KC_map);
 			}
-			else cout << "There is no KC!" << endl;
+			else cout << "There is no KC" << endl;
 			break;
 		}
 		case 10:
@@ -312,6 +377,7 @@ int main()
 					getline(cin, name);
 					for (int i : find_pipe_by_filter(pipe_map, check_name, name))
 						cout << pipe_map[i];
+					system("pause");
 					break;
 				}
 				case 2:
@@ -320,6 +386,7 @@ int main()
 					int repair = check_the_number(0, 1);
 					for (int i : find_pipe_by_filter(pipe_map, check_repair, repair))
 						cout << pipe_map[i];
+					system("pause");
 					break;
 				}
 				}
@@ -336,6 +403,7 @@ int main()
 					getline(cin, name);
 					for (int i : find_KC_by_filter(KC_map, check_name, name))
 						cout << KC_map[i];
+					system("pause");
 					break;
 				}
 				case 2:
@@ -344,6 +412,7 @@ int main()
 					double not_working = check_the_number(0.0, 100.0);
 					for (int i : find_KC_by_filter(KC_map, check_percentage, not_working))
 						cout << KC_map[i];
+					system("pause");
 					break;
 				}
 				}
@@ -352,7 +421,9 @@ int main()
 		}
 		case 11:
 		{
-
+			package_pipe_editing(pipe_map);
+			system("pause");
+			break;
 		}
 		default:
 			cout << "Program error";

@@ -9,7 +9,6 @@ class KC
 
 public:
 	KC();
-	//int get_id_KC() const;
 	void edit_KC();
 	void load(std::ifstream& fin);
 

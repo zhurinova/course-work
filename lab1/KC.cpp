@@ -9,11 +9,6 @@ KC::KC() {
 	id_KC = KC::max_id_KC;
 }
 
-//int KC::get_id_KC() const
-//{
-//	return id_KC;
-//}
-
 void KC:: edit_KC()
 {
 	cout << "Amount of guilds in work" << endl;
@@ -38,7 +33,7 @@ istream& operator >> (istream& in, KC& k)
 	cout << "Amount of guilds in work (0 - 100)" << endl;
 	k.work_guilds_KC = check_the_number(0, k.guilds_KC);
 	cout << "Efficiency in percent (0 - 100)" << endl;
-	k.efficiency_KC = check_the_number(0.0, 100.0);
+	k.efficiency_KC = ((double)k.work_guilds_KC / (double)k.guilds_KC )* 100;
 	return in;
 }
 
