@@ -10,19 +10,16 @@ Pipe::Pipe()
 	id_pipe = Pipe::max_id_pipe;
 }
 
+int Pipe::get_id() const
+{
+	return id_pipe;
+}
+
 void Pipe:: edit_pipe()
 {
 	cout << "Is pipe under repair?" << endl;
 	cout << "0 - no" << endl << "1 - yes" << endl;
 	repair_pipe = check_the_number(0, 1);
-}
-
-void Pipe::load(std::ifstream& fin)
-{
-	fin >> name_pipe;
-	fin >> length_pipe;
-	fin >> diametr_pipe;
-	fin >> repair_pipe;
 }
 
 istream& operator >> (istream& in, Pipe& p)   // пользовательский опeратор на вход, который будет принимать тип труба
@@ -51,6 +48,7 @@ ostream& operator << (ostream& out, const Pipe& p)
 
 ifstream& operator >> (ifstream& in, Pipe& p)
 {
+	in >> p.id_pipe;
 	in >> p.name_pipe;
 	in >> p.length_pipe;
 	in >> p.diametr_pipe;
@@ -60,7 +58,8 @@ ifstream& operator >> (ifstream& in, Pipe& p)
 
 ofstream& operator << (ofstream& out, const Pipe& p)
 {
-	out << p.name_pipe << endl
+	out << p.id_pipe << endl
+		<< p.name_pipe << endl
 		<< p.length_pipe << endl
 		<< p.diametr_pipe << endl
 		<< p.repair_pipe << endl;

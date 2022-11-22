@@ -11,8 +11,9 @@ public:
 	Pipe();
 	void edit_pipe();
 	void load(std::ifstream& fin);
+    int get_id() const;
 
-	static int max_id_pipe;
+	static int max_id_pipe;    // поле, которое разделяется всеми объектами класса
 	std::string name_pipe;
 	double length_pipe{};
 	double diametr_pipe{};

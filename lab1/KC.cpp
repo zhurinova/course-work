@@ -9,18 +9,15 @@ KC::KC() {
 	id_KC = KC::max_id_KC;
 }
 
+int KC::get_id() const
+{
+	return id_KC;
+}
+
 void KC:: edit_KC()
 {
 	cout << "Amount of guilds in work" << endl;
 	work_guilds_KC = check_the_number(0, guilds_KC);
-}
-
-void KC::load(std::ifstream& fin)
-{
-	fin >> name_KC;
-	fin >> guilds_KC;
-	fin >> work_guilds_KC;
-	fin >> efficiency_KC;
 }
 
 istream& operator >> (istream& in, KC& k)
@@ -32,7 +29,6 @@ istream& operator >> (istream& in, KC& k)
 	k.guilds_KC = check_the_number(0, 100);
 	cout << "Amount of guilds in work (0 - 100)" << endl;
 	k.work_guilds_KC = check_the_number(0, k.guilds_KC);
-	cout << "Efficiency in percent (0 - 100)" << endl;
 	k.efficiency_KC = ((double)k.work_guilds_KC / (double)k.guilds_KC )* 100;
 	return in;
 }
@@ -43,7 +39,7 @@ ostream& operator << (ostream& out, const KC& k)
 		<< "\t   The name of KC: " << k.name_KC
 		<< "\t   Amount of guilds: " << k.guilds_KC
 		<< "\t   Amount of guilds in work: " << k.work_guilds_KC
-		<< "\t   Efficiency: " << k.efficiency_KC << " %" << endl;
+		<< "\t   Efficiency in percent (0 - 100): " << k.efficiency_KC << " %" << endl;
 	return out;
 }
 
@@ -59,7 +55,8 @@ ifstream& operator >> (ifstream& in, KC& k)
 
 ofstream& operator << (ofstream& out, const KC& k)
 {
-	out << k.name_KC << endl
+	out << k.id_KC << endl
+		<< k.name_KC << endl
 		<< k.guilds_KC << endl
 		<< k.work_guilds_KC << endl
 		<< k.efficiency_KC << endl;

@@ -11,6 +11,7 @@ public:
 	KC();
 	void edit_KC();
 	void load(std::ifstream& fin);
+	int get_id() const;
 
 	static int max_id_KC;
 	std:: string name_KC;
