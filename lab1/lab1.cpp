@@ -273,7 +273,6 @@ void package_pipe_editing(unordered_map<int, Pipe>& pipe_map)
 	cout << "Do you want to edit: 1 - all pipes, 2 - several pipes: ";
 	if (check_the_number(1, 2) == 1)
 	{
-		vector <int> id_vector;
 		cout << "Enter 1 - to make all pipes work, 2 - to make it under repair";
 		if (check_the_number(1, 2) == 1)
 		{
@@ -351,14 +350,15 @@ int main()
 		{
 			Pipe p;
 			cin >> p;
-			pipe_map[p.get_id()] = p;
+			pipe_map.insert({p.get_id(), p});
 			break;
 		}
 		case 2:
 		{
 			KC k;
 			cin >> k;
-			KC_map[k.get_id()] = k;
+			//KC_map[k.get_id()] = k;
+			KC_map.insert({ k.get_id(), k });
 			break;
 		}
 		case 3:
@@ -374,6 +374,7 @@ int main()
 				choose_pipe(pipe_map).edit_pipe();
 			}
 			else cout << "Input Pipe please" << endl;
+			system("pause");
 			break;
 		}
 		case 5:
@@ -383,6 +384,7 @@ int main()
 				choose_KC(KC_map).edit_KC();
 			}
 			else cout << "Input KC please" << endl;
+			system("pause");
 			break;
 		}
 		case 6:
@@ -399,6 +401,7 @@ int main()
 				delete_pipe(pipe_map);
 			}
 			else cout << "There is no Pipe!" << endl;
+			system("pause");
 			break;
 		}
 		case 9:
@@ -408,6 +411,7 @@ int main()
 				delete_KC(KC_map);
 			}
 			else cout << "There is no KC!" << endl;
+			system("pause");
 			break;
 		}
 		case 10:

@@ -3,10 +3,10 @@
 
 using namespace std;
 
-int KC::max_id_KC = 1;
+int KC::max_id_KC = 0;
 
 KC::KC() {
-	id_KC = KC::max_id_KC;
+	id_KC = ++KC::max_id_KC;
 }
 
 int KC::get_id() const
@@ -18,6 +18,8 @@ void KC:: edit_KC()
 {
 	cout << "Amount of guilds in work" << endl;
 	work_guilds_KC = check_the_number(0, guilds_KC);
+	efficiency_KC = ((double)work_guilds_KC / (double)guilds_KC) * 100;
+
 }
 
 istream& operator >> (istream& in, KC& k)

@@ -3,11 +3,11 @@
 
 using namespace std;
 
-int Pipe::max_id_pipe = 1;
+int Pipe::max_id_pipe = 0;
 
 Pipe::Pipe()
 {
-	id_pipe = Pipe::max_id_pipe;
+	id_pipe = ++Pipe::max_id_pipe;
 }
 
 int Pipe::get_id() const
