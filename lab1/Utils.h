@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 
+int get_correct_diametr();
+
 template <typename T>
 
 T check_the_number(T min, T max)
