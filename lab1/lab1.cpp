@@ -24,6 +24,7 @@ void menu()
 	cout << "9. Delete KC" << endl;
 	cout << "10. Search object" << endl;
 	cout << "11. Package pipe's editing " << endl;
+	cout << "12. Gas transmission system" << endl;
 	cout << "Choose action" << endl << endl;
 }
 
@@ -162,6 +163,11 @@ bool check_repair(const Pipe& p, int param)
 	return p.repair_pipe == param;
 }
 
+bool check_diametr(const Pipe& p, int param)
+{
+	return p.diametr_pipe == param;
+}
+
 template<typename T>
 set <int> find_pipe_by_filter(const unordered_map<int, Pipe>& pipe_map, filter_for_pipe <T> f, T param)
 {
@@ -237,6 +243,7 @@ set <int> find(unordered_map<int, Pipe>& pipe_map)
 		system("pause");
 		break;
 	}
+
 	}
 	return result;
 }
@@ -342,6 +349,196 @@ void package_pipe_editing(unordered_map<int, Pipe>& pipe_map)
 	}
 }
 
+void function_for_connection(unordered_map<int, Pipe>& pipe_map)
+{
+	cout << "There are no pipes with this diametr. Do you want to create it: 1 - yes, 2 - no" << endl;
+	switch (check_the_number(1, 2))
+	{
+	case 1:
+	{
+		Pipe p;
+		cin >> p;
+		pipe_map.insert({ p.get_id(), p });
+		break;
+	}
+	case 2:
+		cout << "OK" << endl;
+		break;
+	}
+}
+
+
+void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
+{
+	if ((pipe_map.size() > 0) && (KC_map.size() > 1))
+	{
+		cout << "Choose pipe by diametr to connect it with KC (500, 700, 1400)" << endl;
+		int diametr_pipe_connection = get_correct_diametr();
+		set <int> id_set = find_pipe_by_filter(pipe_map, check_diametr, diametr_pipe_connection);
+		if (id_set.size() > 0)
+		{
+			for (auto& id : id_set)
+			{
+				if (pipe_map[id].id_in_pipe == 0 && pipe_map[id].id_out_pipe == 0)
+				{
+					int id_pipe_connection = id;
+					cout << "Enter id of KC which you want to pipe out: " << endl;
+					int id_out = check_the_id(KC_map, 1, KC::max_id_KC, 0);
+					cout << "Enter id of KC which you want to pipe in: " << endl;
+					int id_in = check_the_id(KC_map, 1, KC::max_id_KC, id_out);
+					pipe_map[id_pipe_connection].id_in_pipe = id_in;
+					pipe_map[id_pipe_connection].id_out_pipe = id_out;
+					KC_map[id_in].degree_of_income += 1;
+					KC_map[id_out].degree_of_outcome += 1;
+					break;
+				}
+				else
+				{
+					function_for_connection(pipe_map);
+				}
+			}
+		}
+		else {
+			function_for_connection(pipe_map);
+		}
+	} 
+	else
+	{
+		cout << "There are not enough pipes and KCs to make connection" << endl;
+	}
+}
+
+void disconnection(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_map)
+{
+	if (pipe_map.size() > 0)
+	{
+		cout << "Enter id of pipe which you want to disconnect" << endl;
+		int id_pipe_disconnect = check_the_id(pipe_map, 1, Pipe::max_id_pipe, 0);
+		if (pipe_map[id_pipe_disconnect].id_in_pipe == 0)
+		{
+			cout << "Pipe isn't connected" << endl;
+		}
+		else
+		{
+			KC_map[pipe_map[id_pipe_disconnect].id_in_pipe].degree_of_income -= 1;
+			KC_map[pipe_map[id_pipe_disconnect].id_out_pipe].degree_of_outcome -= 1;
+			pipe_map[id_pipe_disconnect].id_in_pipe = 0;
+			pipe_map[id_pipe_disconnect].id_out_pipe = 0;
+		}
+	}
+	else
+		cout << "Trere is no pipe";
+}
+
+void see_all_connections(unordered_map<int, Pipe>& pipe_map)
+{
+	for (auto& p : pipe_map)
+	{
+		if (p.second.id_in_pipe > 0 && p.second.id_out_pipe > 0)
+		{
+			cout << "Pipe's id: " << p.first << endl;
+			cout << "Pipe is connected" << endl;
+			cout << "KC's id out: " << p.second.id_out_pipe << endl;
+			cout << "KC's id in: " << p.second.id_in_pipe << endl << endl;
+		}
+		else
+		{
+			cout << "Pipe's id: " << p.first << endl;
+			cout << "Pipe isn't connected" << endl;
+		}
+	}
+}
+
+void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, vector<int>& tops, vector<int>& edges, vector <int>& result)
+{
+	int cycleschet = 0;   // счетчик циклов
+	int deletedpoints = 0;  // интервал удаленных точек
+
+	vector <int> markedtops;    // отмеченные вершины
+	vector <int> markededges;   // отмеченные ребра
+	markedtops.clear();
+
+	bool flag;
+
+	for (auto& k : tops)
+	{
+		flag = false;
+		markededges.clear();
+		if (KC_map[k].degree_of_income == 0 && KC_map[k].degree_of_outcome != 0)   // ищем вершину нашего графа
+		{
+			for (auto& p : edges)
+			{
+				if (pipe_map[p].id_out_pipe == k)      // out - верх, in - низ
+				{
+					markededges.push_back(p);
+				}
+			}
+			flag = true;
+			for (const auto& p : markededges)
+			{
+				KC_map[pipe_map[p].id_in_pipe].degree_of_income -= 1;
+				KC_map[pipe_map[p].id_out_pipe].degree_of_outcome -= 1;
+				pipe_map[p].id_in_pipe = 0;
+				pipe_map[p].id_out_pipe = 0;
+				edges.erase(find(edges.begin(), edges.end(), p));
+			}
+			deletedpoints += 1;  //  считаем удаленные вершины
+			markedtops.push_back(k);  // добавляем какие кс обработали
+		}
+		if (KC_map[k].degree_of_income != 0 && KC_map[k].degree_of_outcome != 0)
+		{
+			cycleschet += 1;   // вершина где-то посередине  
+		}
+		if (KC_map[k].degree_of_income == 0 && KC_map[k].degree_of_outcome == 0 && flag == false)
+		{
+			markedtops.push_back(k);  // записываем висячие вершины, присваивая ей последние номера вершин
+		}
+	}
+	for (const auto& k : markedtops)
+	{
+		result.push_back(k);   // л
+		tops.erase(std::find(tops.begin(), tops.end(), k));   // здесь остаются только серединные вершины
+	}
+	if (deletedpoints == 0 || cycleschet == size(tops) || tops.empty())
+	{
+		return;
+	}
+	//sort(pipe_map, KC_map, tops, edges, result);
+}
+
+void topological_sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map)
+{
+	vector <int> result;
+	vector <int> tops;    
+	vector <int> edges;    //  ребра
+	for (auto& k : KC_map)        // проверка на вершины и ребра, которые есть в графе
+	{
+		if (k.second.degree_of_income != 0 || k.second.degree_of_outcome != 0)
+			tops.push_back(k.first);
+	}
+	for (auto& p : pipe_map)
+	{
+		if (p.second.id_in_pipe != 0)
+			edges.push_back(p.first);
+	}
+
+	int check = size(tops);
+	sorting(pipe_map, KC_map, tops, edges, result);
+	if (!result.empty() && check == size(result))
+	{
+		std::cout << "Graph was sorted" << endl
+			<< "Topological sorting: " << endl;
+		for (const auto k : result)
+		{
+			std::cout << k << endl;
+		}
+	}
+	else
+	{
+		std::cout << "Graph can't be sort because of cycle";
+	}
+}
+
 int main()
 {
 	unordered_map <int, Pipe> pipe_map = {};
@@ -349,8 +546,9 @@ int main()
 	
 	while (true) {
 		//system("cls");
+		//system("pause");
 		menu();
-		switch (check_the_number(0, 11))
+		switch (check_the_number(0, 12))
 		{
 		case 0:
 		{
@@ -368,14 +566,12 @@ int main()
 		{
 			KC k;
 			cin >> k;
-			//KC_map[k.get_id()] = k;
 			KC_map.insert({ k.get_id(), k });
 			break;
 		}
 		case 3:
 		{
 			see_all(pipe_map,KC_map);
-			system("pause");
 			break;
 		}
 		case 4:
@@ -385,7 +581,6 @@ int main()
 				choose_pipe(pipe_map).edit_pipe();
 			}
 			else cout << "Input Pipe please" << endl;
-			system("pause");
 			break;
 		}
 		case 5:
@@ -395,7 +590,6 @@ int main()
 				choose_KC(KC_map).edit_KC();
 			}
 			else cout << "Input KC please" << endl;
-			system("pause");
 			break;
 		}
 		case 6:
@@ -403,7 +597,6 @@ int main()
 			break;
 		case 7:
 			load(pipe_map, KC_map);
-			system("pause");
 			break;
 		case 8:
 		{
@@ -412,7 +605,6 @@ int main()
 				delete_pipe(pipe_map);
 			}
 			else cout << "There is no Pipe!" << endl;
-			system("pause");
 			break;
 		}
 		case 9:
@@ -422,7 +614,6 @@ int main()
 				delete_KC(KC_map);
 			}
 			else cout << "There is no KC!" << endl;
-			system("pause");
 			break;
 		}
 		case 10:
@@ -433,7 +624,26 @@ int main()
 		case 11:
 		{
 			package_pipe_editing(pipe_map);
-			system("pause");
+			break;
+		}
+		case 12:
+		{
+			cout << "Enter: 1 - to connect pipes and KSs, 2 - to disconect, 3 - to see all conections, 4 - topological sort" << endl;
+			switch (check_the_number(1,4))
+			{
+			case 1:
+				conneсtion(pipe_map, KC_map);
+				break;
+			case 2:
+				disconnection(pipe_map, KC_map);
+				break;
+			case 3:
+				see_all_connections(pipe_map);
+				break;
+			case 4:
+				topological_sorting(pipe_map, KC_map);
+				break;
+			}
 			break;
 		}
 		default:

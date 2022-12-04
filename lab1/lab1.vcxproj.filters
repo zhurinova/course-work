@@ -24,6 +24,12 @@
     <ClCompile Include="KC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pipe.h">
@@ -33,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

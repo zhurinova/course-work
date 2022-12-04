@@ -7,6 +7,8 @@ int KC::max_id_KC = 0;
 
 KC::KC() {
 	id_KC = ++KC::max_id_KC;
+	degree_of_income = 0;
+	degree_of_outcome = 0;
 }
 
 int KC::get_id() const
@@ -32,6 +34,8 @@ istream& operator >> (istream& in, KC& k)
 	cout << "Amount of guilds in work (0 - 100)" << endl;
 	k.work_guilds_KC = check_the_number(0, k.guilds_KC);
 	k.efficiency_KC = ((double)k.work_guilds_KC / (double)k.guilds_KC )* 100;
+	k.degree_of_income;
+	k.degree_of_outcome;
 	return in;
 }
 
@@ -52,6 +56,8 @@ ifstream& operator >> (ifstream& in, KC& k)
 	in >> k.guilds_KC;
 	in >> k.work_guilds_KC;
 	in >> k.efficiency_KC;
+	in >> k.degree_of_income;
+	in >> k.degree_of_outcome;
 	return in;
 }
 
@@ -61,7 +67,9 @@ ofstream& operator << (ofstream& out, const KC& k)
 		<< k.name_KC << endl
 		<< k.guilds_KC << endl
 		<< k.work_guilds_KC << endl
-		<< k.efficiency_KC << endl;
+		<< k.efficiency_KC << endl
+		<< k.degree_of_income << endl
+		<< k.degree_of_outcome << endl;
 	return out;
 }
 

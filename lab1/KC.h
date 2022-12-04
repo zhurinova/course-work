@@ -10,7 +10,6 @@ class KC
 public:
 	KC();
 	void edit_KC();
-	void load(std::ifstream& fin);
 	int get_id() const;
 
 	static int max_id_KC;
@@ -18,6 +17,8 @@ public:
 	int guilds_KC{};
 	int work_guilds_KC{};
 	double efficiency_KC{};
+	int degree_of_income = 0;
+	int degree_of_outcome = 0;
 
 	friend std::istream& operator >> (std::istream& in, KC& k);
 	friend std::ostream& operator << (std::ostream& out, const KC& k);

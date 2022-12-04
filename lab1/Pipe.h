@@ -10,7 +10,6 @@ class Pipe
 public:
 	Pipe();
 	void edit_pipe();
-	void load(std::ifstream& fin);
     int get_id() const;
 
 	static int max_id_pipe;    // поле, которое разделяется всеми объектами класса
@@ -18,6 +17,8 @@ public:
 	double length_pipe{};
 	double diametr_pipe{};
 	int repair_pipe{};
+	int id_in_pipe;
+	int id_out_pipe;
 
 	friend std::istream& operator >> (std::istream& in, Pipe& p);
 	friend std::ostream& operator << (std::ostream& out, const Pipe& p);
