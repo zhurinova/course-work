@@ -375,13 +375,14 @@ void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_
 		cout << "Choose pipe by diametr to connect it with KC (500, 700, 1400)" << endl;
 		int diametr_pipe_connection = get_correct_diametr();
 		set <int> id_set = find_pipe_by_filter(pipe_map, check_diametr, diametr_pipe_connection);
+		int id_pipe_connection = 0;
 		if (id_set.size() > 0)
 		{
 			for (auto& id : id_set)
 			{
+				int id_pipe_connection = id;
 				if (pipe_map[id].id_in_pipe == 0 && pipe_map[id].id_out_pipe == 0)
 				{
-					int id_pipe_connection = id;
 					cout << "Enter id of KC which you want to pipe out: " << endl;
 					int id_out = check_the_id(KC_map, 1, KC::max_id_KC, 0);
 					cout << "Enter id of KC which you want to pipe in: " << endl;
@@ -392,15 +393,15 @@ void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_
 					KC_map[id_out].degree_of_outcome += 1;
 					break;
 				}
-				else
-				{
-					function_for_connection(pipe_map);
-				}
+				//else
+				//{
+				//	function_for_connection(pipe_map);
+				//}
 			}
 		}
-		else {
-			function_for_connection(pipe_map);
-		}
+			else {
+				function_for_connection(pipe_map);
+			}
 	} 
 	else
 	{
@@ -503,7 +504,7 @@ void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, v
 	{
 		return;
 	}
-	//sort(pipe_map, KC_map, tops, edges, result);
+	sorting(pipe_map, KC_map, tops, edges, result);
 }
 
 void topological_sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map)
