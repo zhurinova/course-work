@@ -393,10 +393,6 @@ void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_
 					KC_map[id_out].degree_of_outcome += 1;
 					break;
 				}
-				//else
-				//{
-				//	function_for_connection(pipe_map);
-				//}
 			}
 		}
 			else {
@@ -450,32 +446,32 @@ void see_all_connections(unordered_map<int, Pipe>& pipe_map)
 	}
 }
 
-void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, vector<int>& tops, vector<int>& edges, vector <int>& result)
+void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, set <int>& tops, set <int>& edges, set <int>& result)
 {
-	int cycleschet = 0;   // счетчик циклов
-	int deletedpoints = 0;  // интервал удаленных точек
+	int middle_tops = 0; 
+	int deleted_tops = 0;  // удаленные вершины
 
-	vector <int> markedtops;    // отмеченные вершины
-	vector <int> markededges;   // отмеченные ребра
-	markedtops.clear();
+	set <int> marked_tops;    // помеченные вершины
+	set <int> marked_edges;   // помеченные ребра
+	marked_tops.clear();
 
 	bool flag;
 
 	for (auto& k : tops)
 	{
 		flag = false;
-		markededges.clear();
+		marked_edges.clear();
 		if (KC_map[k].degree_of_income == 0 && KC_map[k].degree_of_outcome != 0)   // ищем вершину нашего графа
 		{
 			for (auto& p : edges)
 			{
-				if (pipe_map[p].id_out_pipe == k)      // out - верх, in - низ
+				if (pipe_map[p].id_out_pipe == k)      // out - откуда выходит, in - куда входит
 				{
-					markededges.push_back(p);
+					marked_edges.insert(p);
 				}
 			}
 			flag = true;
-			for (const auto& p : markededges)
+			for (const auto& p : marked_edges)
 			{
 				KC_map[pipe_map[p].id_in_pipe].degree_of_income -= 1;
 				KC_map[pipe_map[p].id_out_pipe].degree_of_outcome -= 1;
@@ -483,24 +479,24 @@ void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, v
 				pipe_map[p].id_out_pipe = 0;
 				edges.erase(find(edges.begin(), edges.end(), p));
 			}
-			deletedpoints += 1;  //  считаем удаленные вершины
-			markedtops.push_back(k);  // добавляем какие кс обработали
+			deleted_tops += 1;  //  считаем удаленные вершины
+			marked_tops.insert(k);  // добавляем в вектор, какие КС обработали 
 		}
 		if (KC_map[k].degree_of_income != 0 && KC_map[k].degree_of_outcome != 0)
 		{
-			cycleschet += 1;   // вершина где-то посередине  
+			middle_tops += 1; // вершины посередине графа 
 		}
 		if (KC_map[k].degree_of_income == 0 && KC_map[k].degree_of_outcome == 0 && flag == false)
 		{
-			markedtops.push_back(k);  // записываем висячие вершины, присваивая ей последние номера вершин
+			marked_tops.insert(k);  // записываем висячие вершины, присваивая ей последние номера вершин
 		}
 	}
-	for (const auto& k : markedtops)
+	for (const auto& k : marked_tops)
 	{
-		result.push_back(k);   // л
+		result.insert(k);   
 		tops.erase(std::find(tops.begin(), tops.end(), k));   // здесь остаются только серединные вершины
 	}
-	if (deletedpoints == 0 || cycleschet == size(tops) || tops.empty())
+	if (deleted_tops == 0 || middle_tops == size(tops) || tops.empty())
 	{
 		return;
 	}
@@ -509,34 +505,37 @@ void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, v
 
 void topological_sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map)
 {
-	vector <int> result;
-	vector <int> tops;    
-	vector <int> edges;    //  ребра
+	set <int> result;
+	set <int> tops;    
+	set <int> edges;    //  ребра
 	for (auto& k : KC_map)        // проверка на вершины и ребра, которые есть в графе
 	{
 		if (k.second.degree_of_income != 0 || k.second.degree_of_outcome != 0)
-			tops.push_back(k.first);
+		{
+			tops.insert(k.first);
+		}
 	}
 	for (auto& p : pipe_map)
 	{
 		if (p.second.id_in_pipe != 0)
-			edges.push_back(p.first);
+		{
+			edges.insert(p.first);
+		}
 	}
 
 	int check = size(tops);
 	sorting(pipe_map, KC_map, tops, edges, result);
 	if (!result.empty() && check == size(result))
 	{
-		std::cout << "Graph was sorted" << endl
-			<< "Topological sorting: " << endl;
+		cout << "Graph was sorted by Topological sorting: " << endl;
 		for (const auto k : result)
 		{
-			std::cout << k << endl;
+			cout << k << endl;
 		}
 	}
 	else
 	{
-		std::cout << "Graph can't be sort because of cycle";
+		cout << "Graph can't be sort because of cycle";
 	}
 }
 
@@ -546,8 +545,6 @@ int main()
 	unordered_map <int, KC> KC_map = {};
 	
 	while (true) {
-		//system("cls");
-		//system("pause");
 		menu();
 		switch (check_the_number(0, 12))
 		{
