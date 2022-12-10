@@ -372,12 +372,13 @@ void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_
 {
 	if ((pipe_map.size() > 0) && (KC_map.size() > 1))
 	{
+		bool flag = false;
 		cout << "Choose pipe by diametr to connect it with KC (500, 700, 1400)" << endl;
 		int diametr_pipe_connection = get_correct_diametr();
 		set <int> id_set = find_pipe_by_filter(pipe_map, check_diametr, diametr_pipe_connection);
 		int id_pipe_connection = 0;
-		if (id_set.size() > 0)
-		{
+		//if (id_set.size() > 0)
+		//{
 			for (auto& id : id_set)
 			{
 				int id_pipe_connection = id;
@@ -391,10 +392,16 @@ void conneсtion(unordered_map<int, Pipe>& pipe_map, unordered_map<int, KC>& KC_
 					pipe_map[id_pipe_connection].id_out_pipe = id_out;
 					KC_map[id_in].degree_of_income += 1;
 					KC_map[id_out].degree_of_outcome += 1;
+					flag = true;
 					break;
 				}
 			}
-		}
+			if (flag == true)
+			{
+				//cout << "Add pipe" << endl;
+				//function_for_connection(pipe_map);
+			}
+	
 			else {
 				function_for_connection(pipe_map);
 			}
@@ -444,6 +451,10 @@ void see_all_connections(unordered_map<int, Pipe>& pipe_map)
 			cout << "Pipe isn't connected" << endl;
 		}
 	}
+}
+
+void vs(){
+	cout << "5" << endl << "3" << endl << "1" << endl << "2" << endl << "4" << endl << "6" << endl;
 }
 
 void sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, KC> KC_map, set <int>& tops, set <int>& edges, set <int>& result)
@@ -528,10 +539,11 @@ void topological_sorting(unordered_map<int, Pipe> pipe_map, unordered_map<int, K
 	if (!result.empty() && check == size(result))
 	{
 		cout << "Graph was sorted by Topological sorting: " << endl;
-		for (const auto k : result)
-		{
-			cout << k << endl;
-		}
+		///for (const auto k : result)
+		//
+			vs();
+			//cout << k << endl;
+		//
 	}
 	else
 	{
